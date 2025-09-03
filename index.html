@@ -5,12 +5,78 @@
   <title>Google Sheets Web App</title>
 </head>
 <style>
-    body{
-        background-color: blueviolet;
+    body {
+        background-color: #00BFFF; /* Deep sky blue for a refreshing vibe */
+        color: #FFFFFF; /* White text for better contrast */
         text-align: center;
         padding: 15%;
+        font-family: 'Arial', sans-serif;
+    }
+
+    h2 {
+        color: #ffffff; /* Vibrant header */
+    }
+
+    #saveBtn {
+        background-color: #FF4500; /* Orange-red button */
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    #saveBtn:hover {
+        background-color: #FF6347; /* Lighter red on hover */
+        transform: scale(1.05);
+    }
+
+    #fetchBtn {
+        background-color: #FFD700; /* Golden yellow for a fresh contrast */
+        color: #FFFFFF;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    #fetchBtn:hover {
+        background-color: #FF8C00; /* Darker orange on hover */
+        transform: scale(1.05);
+    }
+
+    #output {
+        background-color: #F0F8FF; /* Alice blue background for readability */
+        color: #333333; /* Dark text for easy reading */
+        padding: 20px;
+        border-radius: 10px;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 14px;
+        overflow-x: auto;
+    }
+
+    /* Spinner Styles */
+    #loadingSpinner {
+        display: none; /* Hidden by default */
+        border: 4px solid #f3f3f3; /* Light gray background */
+        border-top: 4px solid #3498db; /* Blue spinner */
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 2s linear infinite;
+        margin-top: 20px;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
 </style>
+
 <body>
 
   <h2>Google Sheets Integration</h2>
@@ -21,6 +87,9 @@
   <h3>Stored Data (check console or see below):</h3>
   <pre id="output"></pre>
 
+  <!-- Loading spinner -->
+  <div id="loadingSpinner"></div>
+
   <script>
     const scriptURL = "https://script.google.com/macros/s/AKfycbypne8OjfMV5bxHuIQ5hcpFRA2Py5ELBdxtR-4TjPwuTg-iQhdUdOYSnqpQ3xhmI9z5WQ/exec";
 
@@ -28,13 +97,22 @@
     document.getElementById("saveBtn").addEventListener("click", () => {
       const payload = { name: "John Doe", score: 95 };
 
+      // Show the loading spinner while data is being saved
+      document.getElementById("loadingSpinner").style.display = "block";
+
       fetch(scriptURL, {
         method: "POST",
         body: JSON.stringify(payload)
       })
       .then(res => res.text())
-      .then(msg => alert(msg))
+      .then(msg => {
+        // Hide the spinner after data is saved
+        document.getElementById("loadingSpinner").style.display = "none";
+        alert(msg);
+      })
       .catch(err => {
+        // Hide the spinner if there was an error
+        document.getElementById("loadingSpinner").style.display = "none";
         console.error("POST error:", err);
         alert("Failed to save data.");
       });
